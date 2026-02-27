@@ -77,13 +77,12 @@ body.page2 {
     padding: 0;
     font-family: 'Arial', sans-serif;
     color: white;
-    overflow: hidden;
     position: relative;
     height: 100vh;
 }
 
 #fluidCanvas {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -101,7 +100,7 @@ body.page2 {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shimmer 3s infinite;
+    animation: shimmertitle ease-in-out infinite;
 }
 
 .songs-container {
@@ -172,7 +171,7 @@ audio {
     font-size: 3.2rem;
     text-align: center;
     margin-bottom: 20px;
-    font-family: "Playfair Display", serif;
+    font-family: "Great Vibes", cursive;
     background: linear-gradient(45deg, #ffffff, #ffb6c1, #ffffff);
     background-size: 200% 200%;
     -webkit-background-clip: text;
@@ -183,6 +182,12 @@ audio {
 }
 
 @keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmerTitle {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
@@ -231,4 +236,15 @@ audio {
     .sub-letter {
         font-size: 1.1rem;
     }
+}
+/* ===== FIX MOBILE SCROLL ===== */
+html, body {
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
+}
+
+.page2 {
+    position: relative;
+    z-index: 1;
 }
