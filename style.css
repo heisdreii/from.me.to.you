@@ -167,3 +167,68 @@ audio {
     0% { background-position: -200px 0; }
     100% { background-position: 200px 0; }
 }
+/* ===== Artistic Greeting ===== */
+.special-greeting {
+    font-size: 3.2rem;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: "Playfair Display", serif;
+    background: linear-gradient(45deg, #ffffff, #ffb6c1, #ffffff);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s ease-in-out infinite;
+    letter-spacing: 2px;
+}
+
+@keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+/* ===== Sub Letter Styling ===== */
+.sub-letter {
+    text-align: center;
+    font-size: 1.4rem;
+    margin-top: -10px;
+    margin-bottom: 40px;
+    opacity: 0.5;
+    font-family: "Playfair Display", serif;
+    letter-spacing: 1px;
+}
+/* ===== MOBILE FIX ===== */
+@media (max-width: 768px) {
+
+    .songs-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 20px;
+    }
+
+    .song {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .song img {
+        width: 80%;
+        max-width: 250px;
+    }
+
+    .lyrics {
+        margin-top: 15px;
+        padding: 0 10px;
+    }
+
+    .page2-title {
+        font-size: 2.5rem;
+    }
+
+    .sub-letter {
+        font-size: 1.1rem;
+    }
+}
