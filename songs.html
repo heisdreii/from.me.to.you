@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lyrical Poetry</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="page2">
+
+<canvas id="fluidCanvas"></canvas>
+
+<h1 class="page2-title"><em>Lyrical Poetry</em></h1>
+
+<div class="songs-container">
+    <!-- 1. Someone -->
+    <div class="song">
+        <img src="Someone-Pels P.jpg" alt="Someone - Pels P">
+        <audio id="audio1" controls>
+            <source src="Pels P - Someone (Lyrics) [UcbbkZqqDIQ].mp3" type="audio/mpeg">
+        </audio>
+        <div class="lyrics">
+            Love me up till the sun comes down
+        </div>
+    </div>
+
+    <!-- 2. Wait for Me -->
+    <div class="song">
+        <img src="Wait for Me-Demi Mulla.jpg" alt="Wait for Me - Demi Mulla">
+        <audio id="audio2" controls>
+            <source src="Demi Mulla - Wait For Me (Audio) [FYqqUsXISTk].mp3" type="audio/mpeg">
+        </audio>
+        <div class="lyrics">
+       Girl, you got my mind stuck on you,
+       You don't leave it.
+    </div>
+    </div>
+
+    <!-- 3. Get You -->
+    <div class="song">
+        <img src="Get You-Daniel Caesar.jpg" alt="Get You - Daniel Caesar">
+        <audio id="audio3" controls>
+            <source src="Get You (feat. Kali Uchis) [QwPgtjgir8I].mp3" type="audio/mpeg">
+        </audio>
+        <div class="lyrics">
+        Every time I look into your eyes, I see it
+        You're all I need
+        </div>
+    </div>
+
+    <!-- 4. Best Part -->
+    <div class="song">
+        <img src="Best Part-Daniel Caesar.jpg" alt="Best Part - Daniel Caesar">
+        <audio id="audio4" controls>
+            <source src="Daniel Caesar - Best Part (Audio) ft. H.E.R. [vBy7FaapGRo].mp3" type="audio/mpeg">
+        </audio>
+        <div class="lyrics">
+        If life is a movie, know you're the best part
+        </div>
+    </div>
+
+    <!-- 5. Only One -->
+    <div class="song">
+        <img src="Only One-Demi Mulla.jpg" alt="Only One - Demi Mulla">
+        <audio id="audio5" controls>
+            <source src="Demi Mulla - Only One [Lyric Video] Nights In Summer [iQ4hCvPuPx0].mp3" type="audio/mpeg">
+        </audio>
+        <div class="lyrics">
+        Girl, you're the only one.
+        The only place that I belong.
+        </div>
+    </div>
+
+    <!-- 6. Hear Me Out -->
+    <div class="song">
+        <img src="Hear Me Out-Gabzy.jpg" alt="Hear Me Out - Gabzy">
+        <audio id="audio6" controls>
+            <source src="Gabzy - Hear Me Out (Official Video) [I_hfUg7CAMA].mp3" type="audio/mpeg">
+        </audio>
+        <div class="lyrics">
+        Tell me you want me and no one else
+        'Cause, girl, nobody's ever gonna love you like I do
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+// ===== CANVAS SETUP =====
+const canvas = document.getElementById('fluidCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// ===== AUDIO ANALYSER =====
+const audios = Array.from(document.querySelectorAll('audio'));
+// ===== ONLY ONE SONG AT A TIME =====
+audios.forEach(currentAudio => {
+    currentAudio.addEventListener('play', () => {
+        audios.forEach(otherAudio => {
+            if (otherAudio !== currentAudio) {
+                otherAudio.pause();
+                otherAudio.currentTime = 0; // optional: resets other songs
+            }
+        });
+    });
+});
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+const analyser = audioContext.createAnalyser();
+analyser.fftSize = 64;
+
+let dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+audios.forEach(audio => {
+    const source = audioContext.createMediaElementSource(audio);
+    source.connect(analyser);
+    source.connect(audioContext.destination);
+});
+
+// ===== HEART SYSTEM =====
+const hearts = [];
+
+function createHeart() {
+    hearts.push({
+        x: Math.random() * canvas.width,
+        y: -30,
+        size: Math.random() * 15 + 10,
+        speed: Math.random() * 0.5 + 0.3, // slow fall
+        opacity: Math.random() * 0.4 + 0.2
+    });
+}
+
+function drawHeart(x, y, size, opacity) {
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.bezierCurveTo(
+        x - size / 2, y - size / 2,
+        x - size, y + size / 3,
+        x, y + size
+    );
+    ctx.bezierCurveTo(
+        x + size, y + size / 3,
+        x + size / 2, y - size / 2,
+        x, y
+    );
+    ctx.fillStyle = "rgb(255,182,193)"; // soft pink
+    ctx.fill();
+    ctx.restore();
+}
+
+// ===== ANIMATION LOOP =====
+let t = 0;
+
+function animate() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Get music intensity
+    analyser.getByteFrequencyData(dataArray);
+    let avg = dataArray.reduce((a,b)=>a+b,0)/dataArray.length;
+    let intensity = avg / 60;
+
+    // Background gradient (two visible pinks)
+    const grad = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+    grad.addColorStop(0,'rgba(255,192,203,0.7)');
+    grad.addColorStop(1,'rgba(255,105,180,' + (0.6 + intensity/4) + ')');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    // Fluid bubbles
+    for(let i=0;i<6;i++){
+        const x = canvas.width/2 + Math.sin(t+i) * canvas.width/4;
+        const y = canvas.height/2 + Math.cos(t+i*1.2) * canvas.height/4;
+        const radius = 90 + Math.sin(t+i)*40 + intensity*40;
+        ctx.beginPath();
+        ctx.arc(x,y,radius,0,Math.PI*2);
+        ctx.fillStyle = `rgba(255,182,193,0.35)`;
+        ctx.fill();
+    }
+
+    // Create hearts slowly
+    if (Math.random() < 0.04) createHeart();
+
+    // Animate hearts
+    hearts.forEach((heart, index) => {
+        heart.y += heart.speed;
+
+        // Fade near bottom
+        if (heart.y > canvas.height * 0.6) {
+            heart.opacity -= 0.003;
+        }
+
+        drawHeart(heart.x, heart.y, heart.size, heart.opacity);
+
+        if (heart.y > canvas.height || heart.opacity <= 0) {
+            hearts.splice(index, 1);
+        }
+    });
+
+    t += 0.02 + intensity/15;
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+</script>
+<script>
+// ----- HOVER LYRICS GLOW -----
+const songs = document.querySelectorAll('.song');
+songs.forEach(song => {
+    song.addEventListener('mouseenter', () => {
+        song.querySelector('.lyrics').style.textShadow = '0 0 15px #fff';
+    });
+    song.addEventListener('mouseleave', () => {
+        song.querySelector('.lyrics').style.textShadow = 'none';
+    });
+});
+</script>
+
+</body>
+</html>
