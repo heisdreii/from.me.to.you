@@ -1,8 +1,6 @@
 // Password check for page 1
 function checkPassword() {
     const input = document.getElementById('passwordInput').value;
-      .getElementById("passwordInput")
-  .value
   .replace(/\s+/g, " ")   // remove extra spaces inside
   .trim()                 // remove spaces at start & end
   .toLowerCase();         // ignore capital letters
@@ -13,5 +11,6 @@ function checkPassword() {
         alert("Incorrect password");
     }
 }
+
 
 
