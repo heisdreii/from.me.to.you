@@ -1,7 +1,7 @@
 // Password check for page 1
 function checkPassword() {
     const input = document.getElementById('passwordInput').value;
-    const correctPassword = "August 6th";
+    const correctPassword = "6 August";
 
     if (input === correctPassword) {
         window.location.href = "songs.html";
@@ -9,3 +9,4 @@ function checkPassword() {
         alert("Incorrect password");
     }
 }
+
